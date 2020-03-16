@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {storeProducts,detailProduct} from './data';
-
+import client from './Contentful';
 
 const ProductContext = React.createContext();
 //Prodivder
@@ -31,8 +31,28 @@ const ProductContext = React.createContext();
      this.clearCart = this.clearCart.bind(this);
      this.addTotals = this.addTotals.bind(this);
    }
+   //getData
+   setData = async () =>{
+     try {
+       let response = await client.getEntries({
+        content_type: process.env.REACT_APP_CONTENT_TYPE_ID,
+        select: 'sys.id,fields.title,fields.price,fields.img,fields.info,fields.inCart,fields.count,fields.total,fields.company'
+      });
+      const data = response.items.map(item => {
+        const {title, price,company,info,inCart,count,total,img} = item.fields;
+        return {id:item.sys.id,title,company,info,price,inCart,count,total,img:img.fields.file.url}
+      });
+      this.setState(() => {
+        return {products: data} 
+      })
+
+     } catch (error) {
+       console.log(error);
+     }
+   }
    componentDidMount(){
-     this.setProducts();
+    //this.setProducts();
+    this.setData();
    }
    setProducts(){
      let tempProducts =[];

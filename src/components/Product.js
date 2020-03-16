@@ -42,7 +42,7 @@ export default class Product extends Component {
 }
 Product.propTypes = {
   product:PropTypes.shape({
-    id:PropTypes.number,
+    id:PropTypes.string,
     img: PropTypes.string,
     title: PropTypes.string,
     price: PropTypes.number,
